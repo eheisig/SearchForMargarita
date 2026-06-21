@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUV Shortlist</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f7f4ee;
+    color: #1a1a1a;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 56px 40px 96px;
+  }
+
+  /* WCAG 2.4.11 Focus Appearance — 3px outline, 3:1+ contrast */
+  :focus-visible {
+    outline: 3px solid #1a5c2a;
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  header { margin-bottom: 72px; }
+  header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  header p {
+    font-size: 0.75rem;
+    color: #4a4035; /* was #8a7e6e — now 9.2:1 */
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Two-column on desktop, single on mobile */
+  #list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  @media (min-width: 800px) {
+    #list {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 72px;
+    }
+  }
+
+  .car {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    column-gap: 20px;
+    padding-bottom: 64px;
+  }
+
+  .num {
+    font-size: 0.65rem;
+    color: #6a5e4e; /* was #b0a090 (2.3:1 fail) — now 5.8:1 */
+    font-variant-numeric: tabular-nums;
+    padding-top: 6px;
+    text-align: right;
+    letter-spacing: 0.02em;
+  }
+  .car.local .num { color: #1a5c2a; font-weight: 700; }
+
+  .body { display: flex; flex-direction: column; gap: 6px; }
+
+  /* h2 for semantic structure */
+  .name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .name .trim {
+    font-weight: 400;
+    color: #4a4035; /* was #7a6e5e — now 9.2:1 */
+    font-size: 1rem;
+  }
+
+  .price-row { display: flex; align-items: baseline; gap: 14px; margin-top: 2px; }
+  .price { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+  .miles { font-size: 0.8rem; color: #4a4035; }
+
+  /* secondary text — all at #4a4035 (9.2:1) or #5a4e3e (7.4:1) */
+  .meta, .loc, .safety, .owners, .feats {
+    font-size: 0.78rem;
+    color: #4a4035;
+  }
+
+  .local-tag { color: #1a5c2a; font-weight: 700; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.08em; }
+  .ship-tag  { color: #4a4035; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.08em; }
+
+  .stars    { color: #7a5500; } /* was #b07a20 (3.4:1 fail) — now 6.1:1 */
+  .tsp-plus { color: #1a5c2a; font-weight: 700; }
+  .tsp      { color: #2a4a8c; font-weight: 600; }
+
+  .accident    { color: #9b1a1a; font-weight: 600; }
+  .no-accident { color: #1a5c2a; }
+
+  /* WCAG 2.5.8 Target Size — min 24×24px via padding */
+  .link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    margin-top: 10px;
+    padding: 4px 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-bottom: 1px solid #1a1a1a;
+    letter-spacing: 0.01em;
+  }
+  .link:hover { color: #1a5c2a; border-color: #1a5c2a; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SUV Shortlist</h1>
+  <p>25 cars * pre-filtered * hey momma!</p>
+</header>
+
+<main id="list" aria-label="Car listings"></main>
+
+<script>
+const CARS = [
+  {year:2019,make:"Hyundai",model:"Santa Fe",trim:"SE",price:14998,miles:107000,cityMpg:22,cargo:36.4,location:"Charlottesville, VA",shipping:"Local",nhtsa:"5/5",iihs:"TSP+",owners:3,accident:"1 reported",sunroof:false,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/70010384"},
+  {year:2020,make:"Nissan",model:"Rogue",trim:"SV",price:14998,miles:127000,cityMpg:25,cargo:36.5,location:"Potomac Mills, VA",shipping:"Free",nhtsa:"4/5",iihs:"TSP",owners:1,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/28450487"},
+  {year:2019,make:"Hyundai",model:"Tucson",trim:"Value",price:14998,miles:104000,cityMpg:23,cargo:31.0,location:"Potomac Mills, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:2,accident:"1 reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/28651739"},
+  {year:2018,make:"Nissan",model:"Rogue",trim:"SL",price:15998,miles:120000,cityMpg:25,cargo:36.5,location:"Dulles, VA",shipping:"Free",nhtsa:"4/5",iihs:"TSP",owners:2,accident:"None reported",sunroof:true,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/28865931"},
+  {year:2019,make:"Volkswagen",model:"Tiguan",trim:"S",price:16998,miles:67000,cityMpg:21,cargo:37.6,location:"Fredericksburg, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:1,accident:"None reported",sunroof:false,bsm:true,lda:false,acc:false,url:"https://www.carmax.com/car/28865976"},
+  {year:2019,make:"Hyundai",model:"Tucson",trim:"Sport",price:16998,miles:80000,cityMpg:23,cargo:31.0,location:"West Broad (Richmond), VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:2,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/29024102"},
+  {year:2018,make:"Subaru",model:"Outback",trim:"2.5i Touring",price:17998,miles:109000,cityMpg:25,cargo:32.5,location:"Charlottesville, VA",shipping:"Local",nhtsa:"5/5",iihs:"TSP+",owners:2,accident:"None reported",sunroof:true,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/28373451"},
+  {year:2020,make:"Ford",model:"Escape",trim:"SE",price:17998,miles:50000,cityMpg:26,cargo:37.5,location:"Dulles, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP",owners:2,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/28738972"},
+  {year:2019,make:"Hyundai",model:"Santa Fe",trim:"SE",price:17998,miles:71000,cityMpg:22,cargo:36.4,location:"West Broad (Richmond), VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:4,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/70037532"},
+  {year:2019,make:"Hyundai",model:"Tucson",trim:"Limited",price:17998,miles:79000,cityMpg:23,cargo:31.0,location:"Dulles, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:3,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/28866181"},
+  {year:2020,make:"Ford",model:"Edge",trim:"Titanium",price:18998,miles:78000,cityMpg:21,cargo:39.2,location:"Charlottesville, VA",shipping:"Local",nhtsa:"5/5",iihs:"TSP",owners:2,accident:"1 reported",sunroof:true,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/27968880"},
+  {year:2021,make:"Nissan",model:"Rogue",trim:"SV",price:18998,miles:86000,cityMpg:25,cargo:36.5,location:"Charlottesville, VA",shipping:"Local",nhtsa:"4/5",iihs:"TSP+",owners:1,accident:"None reported",sunroof:true,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/27969408"},
+  {year:2021,make:"Ford",model:"Escape",trim:"SE",price:18998,miles:49000,cityMpg:26,cargo:37.5,location:"Lynchburg, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP",owners:2,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/28909624"},
+  {year:2022,make:"Ford",model:"Edge",trim:"SEL",price:18998,miles:73000,cityMpg:21,cargo:39.2,location:"Potomac Mills, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP",owners:3,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/28909749"},
+  {year:2021,make:"Ford",model:"Escape",trim:"SE",price:18998,miles:39000,cityMpg:26,cargo:37.5,location:"Fredericksburg, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP",owners:1,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/28909274"},
+  {year:2021,make:"Volkswagen",model:"Tiguan",trim:"S",price:18998,miles:52000,cityMpg:22,cargo:37.6,location:"Roanoke, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP",owners:2,accident:"None reported",sunroof:false,bsm:false,lda:false,acc:false,url:"https://www.carmax.com/car/28377761"},
+  {year:2021,make:"Nissan",model:"Rogue",trim:"S",price:19998,miles:60000,cityMpg:25,cargo:36.5,location:"Charlottesville, VA",shipping:"Local",nhtsa:"4/5",iihs:"TSP+",owners:1,accident:"None reported",sunroof:false,bsm:true,lda:false,acc:false,url:"https://www.carmax.com/car/28680203"},
+  {year:2020,make:"Subaru",model:"Forester",trim:"Premium",price:19998,miles:89000,cityMpg:26,cargo:35.4,location:"Charlottesville, VA",shipping:"Local",nhtsa:"5/5",iihs:"TSP+",owners:2,accident:"None reported",sunroof:true,bsm:false,lda:true,acc:true,url:"https://www.carmax.com/car/28373710"},
+  {year:2020,make:"Nissan",model:"Rogue",trim:"S",price:19998,miles:40000,cityMpg:25,cargo:36.5,location:"Lynchburg, VA",shipping:"Free",nhtsa:"4/5",iihs:"TSP",owners:1,accident:"None reported",sunroof:false,bsm:false,lda:false,acc:false,url:"https://www.carmax.com/car/28439685"},
+  {year:2019,make:"Subaru",model:"Ascent",trim:"Touring",price:19998,miles:101000,cityMpg:20,cargo:47.5,location:"Potomac Mills, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:4,accident:"None reported",sunroof:true,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/28909666"},
+  {year:2021,make:"Ford",model:"Escape",trim:"SE",price:19998,miles:37000,cityMpg:26,cargo:37.5,location:"West Broad (Richmond), VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP",owners:1,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/28680174"},
+  {year:2022,make:"Hyundai",model:"Tucson",trim:"SEL",price:19998,miles:61000,cityMpg:26,cargo:38.0,location:"Potomac Mills, VA",shipping:"Free",nhtsa:"4/5",iihs:"TSP+",owners:2,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/27881699"},
+  {year:2019,make:"Subaru",model:"Ascent",trim:"Touring",price:19998,miles:109000,cityMpg:20,cargo:47.5,location:"Dulles, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:3,accident:"None reported",sunroof:true,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/28909302"},
+  {year:2022,make:"Subaru",model:"Ascent",trim:"Limited",price:19998,miles:127000,cityMpg:20,cargo:47.5,location:"Potomac Mills, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:1,accident:"None reported",sunroof:true,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/28652426"},
+  {year:2022,make:"Ford",model:"Escape",trim:"SE",price:19998,miles:40000,cityMpg:28,cargo:37.5,location:"West Broad (Richmond), VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP",owners:1,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/29024060"},
+  {year:2020,make:"Hyundai",model:"Tucson",trim:"Limited",price:19998,miles:47000,cityMpg:23,cargo:31.0,location:"Charlottesville, VA",shipping:"Local",nhtsa:"5/5",iihs:"TSP+",owners:2,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/70014793"},
+];
+
+function stars(s) {
+  const n = parseInt(s);
+  return `<span class="stars" aria-label="${n} out of 5 stars">${'★'.repeat(n)}${'☆'.repeat(5-n)}</span>`;
+}
+
+function render(c, i) {
+  const isLocal = c.shipping === 'Local';
+  const feats = [c.sunroof && 'Sunroof', c.bsm && 'Blind Spot Monitor', c.lda && 'Lane Departure Alert', c.acc && 'Adaptive Cruise'].filter(Boolean);
+  const accClass = c.accident === 'None reported' ? 'no-accident' : 'accident';
+  const accText  = c.accident === 'None reported' ? 'No accidents' : c.accident;
+  const locTag   = isLocal
+    ? `<span class="local-tag">Local</span>`
+    : `<span class="ship-tag">Ships free</span>`;
+  const label = `${c.year} ${c.make} ${c.model} ${c.trim} on CarMax`;
+
+  return `
+  <article class="car${isLocal ? ' local' : ''}" aria-label="${c.year} ${c.make} ${c.model} ${c.trim}">
+    <div class="num" aria-hidden="true">${String(i+1).padStart(2,'0')}</div>
+    <div class="body">
+      <h2 class="name">${c.year} ${c.make} ${c.model} <span class="trim">${c.trim}</span></h2>
+      <div class="price-row">
+        <span class="price">$${c.price.toLocaleString()}</span>
+        <span class="miles">${c.miles.toLocaleString()} mi</span>
+      </div>
+      <div class="meta">${c.cityMpg} mpg city · ${c.cargo} cu ft cargo</div>
+      <div class="loc">${c.location} · ${locTag}</div>
+      <div class="safety">${stars(c.nhtsa)} <span class="${c.iihs === 'TSP+' ? 'tsp-plus' : 'tsp'}">${c.iihs}</span></div>
+      <div class="owners">${c.owners} owner${c.owners !== 1 ? 's' : ''} · <span class="${accClass}">${accText}</span></div>
+      ${feats.length ? `<div class="feats">${feats.join(' · ')}</div>` : ''}
+      <a class="link" href="${c.url}" target="_blank" rel="noopener" aria-label="${label}">View on CarMax →</a>
+    </div>
+  </article>`;
+}
+
+document.getElementById('list').innerHTML = CARS.map(render).join('');
+</script>
+</body>
+</html>
