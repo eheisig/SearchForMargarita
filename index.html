@@ -32,20 +32,41 @@
   }
   header p {
     font-size: 0.75rem;
-    color: #4a4035; /* was #8a7e6e — now 9.2:1 */
+    color: #4a4035;
     margin-top: 10px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
 
+  .section-header {
+    margin: 0 0 40px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #1a1a1a;
+  }
+  .section-header h2 {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .section-header p {
+    font-size: 0.75rem;
+    color: #4a4035;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .source-section { margin-bottom: 80px; }
+
   /* Two-column on desktop, single on mobile */
-  #list {
+  .list {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0;
   }
   @media (min-width: 800px) {
-    #list {
+    .list {
       grid-template-columns: 1fr 1fr;
       column-gap: 72px;
     }
@@ -60,7 +81,7 @@
 
   .num {
     font-size: 0.65rem;
-    color: #6a5e4e; /* was #b0a090 (2.3:1 fail) — now 5.8:1 */
+    color: #6a5e4e;
     font-variant-numeric: tabular-nums;
     padding-top: 6px;
     text-align: right;
@@ -70,7 +91,6 @@
 
   .body { display: flex; flex-direction: column; gap: 6px; }
 
-  /* h2 for semantic structure */
   .name {
     font-size: 1.25rem;
     font-weight: 700;
@@ -79,7 +99,7 @@
   }
   .name .trim {
     font-weight: 400;
-    color: #4a4035; /* was #7a6e5e — now 9.2:1 */
+    color: #4a4035;
     font-size: 1rem;
   }
 
@@ -87,8 +107,7 @@
   .price { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
   .miles { font-size: 0.8rem; color: #4a4035; }
 
-  /* secondary text — all at #4a4035 (9.2:1) or #5a4e3e (7.4:1) */
-  .meta, .loc, .safety, .owners, .feats {
+  .meta, .loc, .safety, .owners, .feats, .badges-row {
     font-size: 0.78rem;
     color: #4a4035;
   }
@@ -96,14 +115,14 @@
   .local-tag { color: #1a5c2a; font-weight: 700; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.08em; }
   .ship-tag  { color: #4a4035; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.08em; }
 
-  .stars    { color: #7a5500; } /* was #b07a20 (3.4:1 fail) — now 6.1:1 */
+  .stars    { color: #7a5500; }
   .tsp-plus { color: #1a5c2a; font-weight: 700; }
   .tsp      { color: #2a4a8c; font-weight: 600; }
 
   .accident    { color: #9b1a1a; font-weight: 600; }
   .no-accident { color: #1a5c2a; }
 
-  /* WCAG 2.5.8 Target Size — min 24×24px via padding */
+  /* WCAG 2.5.8 Target Size */
   .link {
     display: inline-flex;
     align-items: center;
@@ -124,13 +143,34 @@
 
 <header>
   <h1>SUV Shortlist</h1>
-  <p>25 cars * pre-filtered * hey momma!</p>
+  <p>Pre-filtered · hey momma!</p>
 </header>
 
-<main id="list" aria-label="Car listings"></main>
+<main>
+
+  <!-- CarMax Section -->
+  <section class="source-section" aria-labelledby="carmax-heading">
+    <div class="section-header">
+      <h2 id="carmax-heading">CarMax</h2>
+      <p>25 cars · Charlottesville area</p>
+    </div>
+    <div class="list" id="carmax-list" aria-label="CarMax listings"></div>
+  </section>
+
+  <!-- CarFax Section -->
+  <section class="source-section" aria-labelledby="carfax-heading">
+    <div class="section-header">
+      <h2 id="carfax-heading">CarFax</h2>
+      <p>35 cars · Charlottesville area</p>
+    </div>
+    <div class="list" id="carfax-list" aria-label="CarFax listings"></div>
+  </section>
+
+</main>
 
 <script>
-const CARS = [
+// ── CarMax ───────────────────────────────────────────────────────────────────
+const CARMAX = [
   {year:2019,make:"Hyundai",model:"Santa Fe",trim:"SE",price:14998,miles:107000,cityMpg:22,cargo:36.4,location:"Charlottesville, VA",shipping:"Local",nhtsa:"5/5",iihs:"TSP+",owners:3,accident:"1 reported",sunroof:false,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/70010384"},
   {year:2020,make:"Nissan",model:"Rogue",trim:"SV",price:14998,miles:127000,cityMpg:25,cargo:36.5,location:"Potomac Mills, VA",shipping:"Free",nhtsa:"4/5",iihs:"TSP",owners:1,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:true,url:"https://www.carmax.com/car/28450487"},
   {year:2019,make:"Hyundai",model:"Tucson",trim:"Value",price:14998,miles:104000,cityMpg:23,cargo:31.0,location:"Potomac Mills, VA",shipping:"Free",nhtsa:"5/5",iihs:"TSP+",owners:2,accident:"1 reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/28651739"},
@@ -159,41 +199,126 @@ const CARS = [
   {year:2020,make:"Hyundai",model:"Tucson",trim:"Limited",price:19998,miles:47000,cityMpg:23,cargo:31.0,location:"Charlottesville, VA",shipping:"Local",nhtsa:"5/5",iihs:"TSP+",owners:2,accident:"None reported",sunroof:false,bsm:true,lda:true,acc:false,url:"https://www.carmax.com/car/70014793"},
 ];
 
-function stars(s) {
-  const n = parseInt(s);
+// ── CarFax ───────────────────────────────────────────────────────────────────
+const CARFAX = [
+  {"vin":"2T3H1RFV3KW033628","make":"Toyota","model":"RAV4","trim":"LE","year":2019,"price":19800,"miles_loc":"81,939 miles | Rockingham, VA","dist_mi":48,"badges":"No Accident or Damage | Multiple Use | 3+ Owners | 11 Service Records","url":"https://www.carfax.com/vehicle/2T3H1RFV3KW033628","cargo_cuft":37.6,"cargo_note":"","city_mpg":27,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"2T3P1RFV7KW045342","make":"Toyota","model":"RAV4","trim":"XLE","year":2019,"price":19999,"miles_loc":"","dist_mi":999,"badges":"","url":"https://www.carfax.com/vehicle/2T3P1RFV7KW045342","cargo_cuft":37.6,"cargo_note":"","city_mpg":27,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"KM8J2CA40KU998031","make":"Hyundai","model":"Tucson","trim":"SE","year":2019,"price":12449,"miles_loc":"105,254 miles | Culpeper, VA","dist_mi":39,"badges":"No Accident or Damage | Multiple Use | 2-Owner | 16 Service Records","url":"https://www.carfax.com/vehicle/KM8J2CA40KU998031","cargo_cuft":31.0,"cargo_note":"","city_mpg":23,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"5NMJA3AE6NH119885","make":"Hyundai","model":"Tucson","trim":"SE","year":2022,"price":14798,"miles_loc":"107,199 miles | Charlottesville, VA","dist_mi":15,"badges":"No Accident or Damage | Personal Use | 2-Owner | 6 Service Records","url":"https://www.carfax.com/vehicle/5NMJA3AE6NH119885","cargo_cuft":38.7,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"KM8J2CA40LU207837","make":"Hyundai","model":"Tucson","trim":"SE","year":2020,"price":14987,"miles_loc":"80,101 miles | Henrico, VA","dist_mi":44,"badges":"Accident/Minor Damage | Personal Use | 2-Owner | 15 Service Records","url":"https://www.carfax.com/vehicle/KM8J2CA40LU207837","cargo_cuft":31.0,"cargo_note":"","city_mpg":23,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"KM8J3CAL0LU122632","make":"Hyundai","model":"Tucson","trim":"Sport","year":2020,"price":16795,"miles_loc":"95,027 miles | Henrico, VA","dist_mi":45,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 21 Service Records","url":"https://www.carfax.com/vehicle/KM8J3CAL0LU122632","cargo_cuft":31.0,"cargo_note":"","city_mpg":23,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"KM8J3CAL2KU024118","make":"Hyundai","model":"Tucson","trim":"Ultimate","year":2019,"price":16995,"miles_loc":"56,049 miles | ","dist_mi":999,"badges":"","url":"https://www.carfax.com/vehicle/KM8J3CAL2KU024118","cargo_cuft":31.0,"cargo_note":"","city_mpg":23,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"KM8J33AL2KU943620","make":"Hyundai","model":"Tucson","trim":"Night","year":2019,"price":17795,"miles_loc":"70,425 miles | Richmond, VA","dist_mi":49,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 26 Service Records","url":"https://www.carfax.com/vehicle/KM8J33AL2KU943620","cargo_cuft":31.0,"cargo_note":"","city_mpg":23,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"5NMS53AD3KH001613","make":"Hyundai","model":"Santa Fe","trim":"Limited","year":2019,"price":18295,"miles_loc":"90,252 miles | Henrico, VA","dist_mi":45,"badges":"Accident | Personal Use | CARFAX 1-Owner | 27 Service Records","url":"https://www.carfax.com/vehicle/5NMS53AD3KH001613","cargo_cuft":36.4,"cargo_note":"","city_mpg":19,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"5NMS1DAJXPH612365","make":"Hyundai","model":"Santa Fe","trim":"SE","year":2023,"price":18467,"miles_loc":"90,703 miles | Harrisonburg, VA","dist_mi":45,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 15 Service Records","url":"https://www.carfax.com/vehicle/5NMS1DAJXPH612365","cargo_cuft":36.4,"cargo_note":"","city_mpg":23,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"5NMJFCAE4NH068954","make":"Hyundai","model":"Tucson","trim":"SEL","year":2022,"price":18748,"miles_loc":"110,051 miles | North Chesterfield, VA","dist_mi":48,"badges":"Accident | Personal Use | CARFAX 1-Owner | 21 Service Records","url":"https://www.carfax.com/vehicle/5NMJFCAE4NH068954","cargo_cuft":38.7,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5NMS5CAD1LH203299","make":"Hyundai","model":"Santa Fe","trim":"Limited","year":2020,"price":19026,"miles_loc":"87,386 miles | Fredericksburg, VA","dist_mi":49,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 17 Service Records","url":"https://www.carfax.com/vehicle/5NMS5CAD1LH203299","cargo_cuft":36.4,"cargo_note":"","city_mpg":19,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"KM8J3CA22JU622358","make":"Hyundai","model":"Tucson","trim":"Limited","year":2018,"price":19509,"miles_loc":"62,391 miles | Culpeper, VA","dist_mi":36,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 23 Service Records","url":"https://www.carfax.com/vehicle/KM8J3CA22JU622358","cargo_cuft":31.0,"cargo_note":"","city_mpg":23,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"5NMS6DAJ2NH433994","make":"Hyundai","model":"Santa Fe","trim":"XRT","year":2022,"price":19795,"miles_loc":"94,675 miles | Henrico, VA","dist_mi":45,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 1 Service Record","url":"https://www.carfax.com/vehicle/5NMS6DAJ2NH433994","cargo_cuft":36.4,"cargo_note":"","city_mpg":23,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5NMS5CAA4LH220250","make":"Hyundai","model":"Santa Fe","trim":"Limited","year":2020,"price":19995,"miles_loc":"79,319 miles | Midlothian, VA","dist_mi":47,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 15 Service Records","url":"https://www.carfax.com/vehicle/5NMS5CAA4LH220250","cargo_cuft":36.4,"cargo_note":"","city_mpg":19,"nhtsa_stars":5,"iihs_award":"TSP"},
+  {"vin":"KM8JFCA18NU011223","make":"Hyundai","model":"Tucson","trim":"SEL Convenience","year":2022,"price":19999,"miles_loc":"90,849 miles | Harrisonburg, VA","dist_mi":47,"badges":"Accident/Minor Damage | Personal Use | 2-Owner | 7 Service Records","url":"https://www.carfax.com/vehicle/KM8JFCA18NU011223","cargo_cuft":38.7,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"4S4WMACD8K3443092","make":"Subaru","model":"Ascent","trim":"Premium","year":2019,"price":14607,"miles_loc":"124,745 miles | Richmond, VA","dist_mi":47,"badges":"No Accident or Damage | Personal Use | 2-Owner | 27 Service Records","url":"https://www.carfax.com/vehicle/4S4WMACD8K3443092","cargo_cuft":47.5,"cargo_note":"3rd row folded","city_mpg":21,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"4S4WMARD0K3455521","make":"Subaru","model":"Ascent","trim":"Touring","year":2019,"price":14694,"miles_loc":"139,888 miles | Spotsylvania, VA","dist_mi":41,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 14 Service Records","url":"https://www.carfax.com/vehicle/4S4WMARD0K3455521","cargo_cuft":47.5,"cargo_note":"3rd row folded","city_mpg":21,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"4S4WMAEDXN3453110","make":"Subaru","model":"Ascent","trim":"Premium","year":2022,"price":16948,"miles_loc":"148,807 miles | Fredericksburg, VA","dist_mi":45,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 21 Service Records","url":"https://www.carfax.com/vehicle/4S4WMAEDXN3453110","cargo_cuft":47.5,"cargo_note":"3rd row folded","city_mpg":21,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"4S4WMACD8L3461531","make":"Subaru","model":"Ascent","trim":"Premium","year":2020,"price":17395,"miles_loc":"116,454 miles | Staunton, VA","dist_mi":45,"badges":"No Accident or Damage | Commercial Use | CARFAX 1-Owner | 11 Service Records","url":"https://www.carfax.com/vehicle/4S4WMACD8L3461531","cargo_cuft":47.5,"cargo_note":"3rd row folded","city_mpg":21,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"4S4WMARD0K3478409","make":"Subaru","model":"Ascent","trim":"Touring","year":2019,"price":18778,"miles_loc":"100,906 miles | Fredericksburg, VA","dist_mi":49,"badges":"Accident | Personal Use | 3+ Owners | 14 Service Records","url":"https://www.carfax.com/vehicle/4S4WMARD0K3478409","cargo_cuft":47.5,"cargo_note":"3rd row folded","city_mpg":21,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"JF2SKAAC3NH467246","make":"Subaru","model":"Forester","trim":"","year":2022,"price":19495,"miles_loc":"107,313 miles | Charlottesville, VA","dist_mi":15,"badges":"Damage | Commercial Use | CARFAX 1-Owner | 18 Service Records","url":"https://www.carfax.com/vehicle/JF2SKAAC3NH467246","cargo_cuft":35.4,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5N1AT2MT8LC703937","make":"Nissan","model":"Rogue","trim":"SV","year":2020,"price":10900,"miles_loc":"144,052 miles | Richmond, VA","dist_mi":50,"badges":"Minor Damage | Multiple Use | 3+ Owners | 9 Service Records","url":"https://www.carfax.com/vehicle/5N1AT2MT8LC703937","cargo_cuft":39.3,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"JN8AT2MVXKW400407","make":"Nissan","model":"Rogue","trim":"SV","year":2019,"price":11995,"miles_loc":"92,665 miles | Fredericksburg, VA","dist_mi":45,"badges":"No Accident or Damage | Personal Use | 2-Owner | 27 Service Records","url":"https://www.carfax.com/vehicle/JN8AT2MVXKW400407","cargo_cuft":39.3,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"KNMAT2MV1KP555014","make":"Nissan","model":"Rogue","trim":"SV","year":2019,"price":14995,"miles_loc":"134,544 miles | Fredericksburg, VA","dist_mi":46,"badges":"Damage | Multiple Use | 3+ Owners | 25 Service Records","url":"https://www.carfax.com/vehicle/KNMAT2MV1KP555014","cargo_cuft":39.3,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5N1AT2MV7KC717215","make":"Nissan","model":"Rogue","trim":"SL","year":2019,"price":15495,"miles_loc":"70,750 miles | Fredericksburg, VA","dist_mi":45,"badges":"No Accident or Damage | Personal Use | 3+ Owners | 27 Service Records","url":"https://www.carfax.com/vehicle/5N1AT2MV7KC717215","cargo_cuft":39.3,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"JN8AT2MT4LW043077","make":"Nissan","model":"Rogue","trim":"SV","year":2020,"price":17353,"miles_loc":"65,494 miles | Fredericksburg, VA","dist_mi":45,"badges":"No Accident or Damage | Multiple Use | 3+ Owners | 15 Service Records","url":"https://www.carfax.com/vehicle/JN8AT2MT4LW043077","cargo_cuft":39.3,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5N1AT3BB3MC729721","make":"Nissan","model":"Rogue","trim":"SV","year":2021,"price":18097,"miles_loc":"96,431 miles | Harrisonburg, VA","dist_mi":47,"badges":"Accident | Multiple Use | 3+ Owners | 15 Service Records","url":"https://www.carfax.com/vehicle/5N1AT3BB3MC729721","cargo_cuft":39.3,"cargo_note":"","city_mpg":30,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5N1AT2MV3LC707282","make":"Nissan","model":"Rogue","trim":"SL","year":2020,"price":18995,"miles_loc":"68,273 miles | Midlothian, VA","dist_mi":47,"badges":"No Accident or Damage | Multiple Use | 3+ Owners | 15 Service Records","url":"https://www.carfax.com/vehicle/5N1AT2MV3LC707282","cargo_cuft":39.3,"cargo_note":"","city_mpg":26,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5N1AT3BB5MC696818","make":"Nissan","model":"Rogue","trim":"SV","year":2021,"price":19299,"miles_loc":"70,630 miles | Harrisonburg, VA","dist_mi":47,"badges":"No Accident or Damage | Personal Use | CARFAX 1-Owner | 9 Service Records","url":"https://www.carfax.com/vehicle/5N1AT3BB5MC696818","cargo_cuft":39.3,"cargo_note":"","city_mpg":30,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"JN8AT3AAXMW012152","make":"Nissan","model":"Rogue","trim":"S","year":2021,"price":19979,"miles_loc":"58,885 miles | Fredericksburg, VA","dist_mi":45,"badges":"Minor Damage | Personal Use | 2-Owner | 21 Service Records","url":"https://www.carfax.com/vehicle/JN8AT3AAXMW012152","cargo_cuft":39.3,"cargo_note":"","city_mpg":30,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5N1BT3AA5RC701326","make":"Nissan","model":"Rogue","trim":"S","year":2024,"price":19990,"miles_loc":"69,075 miles | Charlottesville, VA","dist_mi":15,"badges":"No Accident or Damage | Corporate Use | CARFAX 1-Owner | 12 Service Records","url":"https://www.carfax.com/vehicle/5N1BT3AA5RC701326","cargo_cuft":39.3,"cargo_note":"","city_mpg":30,"nhtsa_stars":5,"iihs_award":"TSP+"},
+  {"vin":"5N1BT3BB5PC807571","make":"Nissan","model":"Rogue","trim":"SV","year":2023,"price":19998,"miles_loc":"58,969 miles | Richmond, VA","dist_mi":49,"badges":"No Accident or Damage | Commercial Use | CARFAX 1-Owner | 11 Service Records","url":"https://www.carfax.com/vehicle/5N1BT3BB5PC807571","cargo_cuft":39.3,"cargo_note":"","city_mpg":30,"nhtsa_stars":5,"iihs_award":"TSP+"},
+];
+
+// ── Shared helpers ────────────────────────────────────────────────────────────
+function stars(n) {
   return `<span class="stars" aria-label="${n} out of 5 stars">${'★'.repeat(n)}${'☆'.repeat(5-n)}</span>`;
 }
 
-function render(c, i) {
+function iihs(award) {
+  return `<span class="${award === 'TSP+' ? 'tsp-plus' : 'tsp'}">${award}</span>`;
+}
+
+// ── CarMax render ─────────────────────────────────────────────────────────────
+function renderCarMax(c, i) {
   const isLocal = c.shipping === 'Local';
   const feats = [c.sunroof && 'Sunroof', c.bsm && 'Blind Spot Monitor', c.lda && 'Lane Departure Alert', c.acc && 'Adaptive Cruise'].filter(Boolean);
   const accClass = c.accident === 'None reported' ? 'no-accident' : 'accident';
   const accText  = c.accident === 'None reported' ? 'No accidents' : c.accident;
-  const locTag   = isLocal
-    ? `<span class="local-tag">Local</span>`
-    : `<span class="ship-tag">Ships free</span>`;
-  const label = `${c.year} ${c.make} ${c.model} ${c.trim} on CarMax`;
-
+  const locTag   = isLocal ? `<span class="local-tag">Local</span>` : `<span class="ship-tag">Ships free</span>`;
   return `
   <article class="car${isLocal ? ' local' : ''}" aria-label="${c.year} ${c.make} ${c.model} ${c.trim}">
     <div class="num" aria-hidden="true">${String(i+1).padStart(2,'0')}</div>
     <div class="body">
-      <h2 class="name">${c.year} ${c.make} ${c.model} <span class="trim">${c.trim}</span></h2>
+      <h3 class="name">${c.year} ${c.make} ${c.model} <span class="trim">${c.trim}</span></h3>
       <div class="price-row">
         <span class="price">$${c.price.toLocaleString()}</span>
         <span class="miles">${c.miles.toLocaleString()} mi</span>
       </div>
       <div class="meta">${c.cityMpg} mpg city · ${c.cargo} cu ft cargo</div>
       <div class="loc">${c.location} · ${locTag}</div>
-      <div class="safety">${stars(c.nhtsa)} <span class="${c.iihs === 'TSP+' ? 'tsp-plus' : 'tsp'}">${c.iihs}</span></div>
+      <div class="safety">${stars(parseInt(c.nhtsa))} ${iihs(c.iihs)}</div>
       <div class="owners">${c.owners} owner${c.owners !== 1 ? 's' : ''} · <span class="${accClass}">${accText}</span></div>
       ${feats.length ? `<div class="feats">${feats.join(' · ')}</div>` : ''}
-      <a class="link" href="${c.url}" target="_blank" rel="noopener" aria-label="${label}">View on CarMax →</a>
+      <a class="link" href="${c.url}" target="_blank" rel="noopener" aria-label="${c.year} ${c.make} ${c.model} ${c.trim} on CarMax">View on CarMax →</a>
     </div>
   </article>`;
 }
 
-document.getElementById('list').innerHTML = CARS.map(render).join('');
+// ── CarFax render ─────────────────────────────────────────────────────────────
+function parseMilesLoc(ml) {
+  if (!ml) return {miles: '', location: ''};
+  const pipe = ml.indexOf(' | ');
+  return {
+    miles: pipe > 0 ? ml.slice(0, ml.indexOf(' miles')) : '',
+    location: pipe > 0 ? ml.slice(pipe + 3).trim() : ''
+  };
+}
+
+function accidentFromBadges(badges) {
+  if (!badges || badges.includes('No Accident or Damage')) return null;
+  if (/Accident|Damage/i.test(badges)) return badges.split(' | ')[0];
+  return null;
+}
+
+function renderCarFax(c, i) {
+  const {miles, location} = parseMilesLoc(c.miles_loc);
+  const isNearby = c.dist_mi <= 50 && c.dist_mi !== 999;
+  const isLocal  = c.dist_mi <= 20;
+  const accident = accidentFromBadges(c.badges);
+  const accClass = accident ? 'accident' : 'no-accident';
+  const accText  = accident ? accident : 'No accidents';
+  const distText = c.dist_mi === 999 ? '' : ` · ${c.dist_mi} mi away`;
+  const cargoText = c.cargo_note ? `${c.cargo_cuft} cu ft (${c.cargo_note})` : `${c.cargo_cuft} cu ft cargo`;
+  const trimPart = c.trim ? ` <span class="trim">${c.trim}</span>` : '';
+
+  return `
+  <article class="car${isLocal ? ' local' : ''}" aria-label="${c.year} ${c.make} ${c.model}${c.trim ? ' ' + c.trim : ''}">
+    <div class="num" aria-hidden="true">${String(i+1).padStart(2,'0')}</div>
+    <div class="body">
+      <h3 class="name">${c.year} ${c.make} ${c.model}${trimPart}</h3>
+      <div class="price-row">
+        <span class="price">$${c.price.toLocaleString()}</span>
+        ${miles ? `<span class="miles">${miles} mi</span>` : ''}
+      </div>
+      <div class="meta">${c.city_mpg} mpg city · ${cargoText}</div>
+      ${location ? `<div class="loc">${location}${distText}${isLocal ? ' · <span class="local-tag">Local</span>' : ''}</div>` : ''}
+      <div class="safety">${stars(c.nhtsa_stars)} ${iihs(c.iihs_award)}</div>
+      <div class="owners"><span class="${accClass}">${accText}</span></div>
+      ${c.badges ? `<div class="badges-row">${c.badges.split(' | ').slice(1).join(' · ')}</div>` : ''}
+      <a class="link" href="${c.url}" target="_blank" rel="noopener" aria-label="${c.year} ${c.make} ${c.model} on CarFax">View on CarFax →</a>
+    </div>
+  </article>`;
+}
+
+document.getElementById('carmax-list').innerHTML = CARMAX.map(renderCarMax).join('');
+document.getElementById('carfax-list').innerHTML = CARFAX.map(renderCarFax).join('');
 </script>
 </body>
 </html>
