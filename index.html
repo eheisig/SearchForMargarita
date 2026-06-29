@@ -137,6 +137,55 @@
     letter-spacing: 0.01em;
   }
   .link:hover { color: #1a5c2a; border-color: #1a5c2a; }
+
+  /* ── Toggle switch (CarMax local-only) ──────────────────────────────────── */
+  .toggle-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 0.78rem;
+    color: #4a4035;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle-wrap input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 36px;
+    height: 20px;
+    border: 2px solid #4a4035;
+    border-radius: 10px;
+    background: #f7f4ee;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .toggle-wrap input[type="checkbox"]::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    background: #4a4035;
+    border-radius: 50%;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .toggle-wrap input[type="checkbox"]:checked {
+    background: #1a5c2a;
+    border-color: #1a5c2a;
+  }
+  .toggle-wrap input[type="checkbox"]:checked::after {
+    transform: translateX(16px);
+    background: #f7f4ee;
+  }
+  .toggle-wrap input[type="checkbox"]:focus-visible {
+    outline: 3px solid #1a5c2a;
+    outline-offset: 3px;
+  }
 </style>
 </head>
 <body>
@@ -152,7 +201,11 @@
   <section class="source-section" aria-labelledby="carmax-heading">
     <div class="section-header">
       <h2 id="carmax-heading">CarMax</h2>
-      <p>17 cars · Charlottesville area</p>
+      <p id="carmax-count">17 cars · Charlottesville area</p>
+      <label class="toggle-wrap">
+        <input type="checkbox" id="carmax-toggle" aria-label="Show only local / Charlottesville cars">
+        <span>Local only</span>
+      </label>
     </div>
     <div class="list" id="carmax-list" aria-label="CarMax listings"></div>
   </section>
@@ -308,8 +361,19 @@ function renderCarFax(c, i) {
   </article>`;
 }
 
-document.getElementById('carmax-list').innerHTML = CARMAX.map(renderCarMax).join('');
+function renderCarMaxList(filterLocal) {
+  const cars = filterLocal ? CARMAX.filter(c => c.shipping === 'Local') : CARMAX;
+  document.getElementById('carmax-list').innerHTML = cars.map(renderCarMax).join('');
+  document.getElementById('carmax-count').textContent =
+    `${cars.length} car${cars.length !== 1 ? 's' : ''} · ${filterLocal ? 'Local only' : 'Charlottesville area'}`;
+}
+
+renderCarMaxList(false);
 document.getElementById('carfax-list').innerHTML = CARFAX.map(renderCarFax).join('');
+
+document.getElementById('carmax-toggle').addEventListener('change', function () {
+  renderCarMaxList(this.checked);
+});
 </script>
 </body>
 </html>
